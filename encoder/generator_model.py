@@ -19,6 +19,7 @@ def create_variable_for_generator(name, batch_size):
 
 class Generator:
     def __init__(self, model, batch_size, randomize_noise=False):
+        print("Initializing generator")
         self.batch_size = batch_size
 
         self.initial_dlatents = np.zeros((self.batch_size, 18, 512))
@@ -35,6 +36,7 @@ class Generator:
         self.set_dlatents(self.initial_dlatents)
 
         all_tensors = [op.name for op in self.graph.get_operations()]
+        print("All tensors: ", all_tensors)
 
         self.generator_output = self.graph.get_tensor_by_name('G_synthesis_1/_Run/concat:0')
         self.generated_image = tflib.convert_images_to_uint8(self.generator_output, nchw_to_nhwc=True, uint8_cast=False)
