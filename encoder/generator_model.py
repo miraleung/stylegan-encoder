@@ -35,14 +35,6 @@ class Generator:
         self.dlatent_variable = next(v for v in tf.global_variables() if 'learnable_dlatents' in v.name)
         self.set_dlatents(self.initial_dlatents)
 
-        all_tensors = [op.name for op in self.graph.get_operations()]
-        print("Num tensors: {0}".format(len(all_tensors)))
-        for i in range(len(all_tensors)):
-          tname = all_tensors[i]
-          s = "G_synthesis_1/_Run/"
-          if tname[:len(s)] == s:
-            print("Tensor {0}: {1}".format(i, tname))
-
         self.generator_output = self.graph.get_tensor_by_name('G_synthesis_1/_Run/concat/concat:0')
         self.generated_image = tflib.convert_images_to_uint8(self.generator_output, nchw_to_nhwc=True, uint8_cast=False)
         self.generated_image_uint8 = tf.saturate_cast(self.generated_image, tf.uint8)
