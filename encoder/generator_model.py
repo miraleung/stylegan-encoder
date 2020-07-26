@@ -9,10 +9,12 @@ def create_stub(name, batch_size):
 
 
 def create_variable_for_generator(name, batch_size):
-    return tf.get_variable('learnable_dlatents',
-                           shape=(batch_size, 18, 512),
-                           dtype='float32',
-                           initializer=tf.initializers.random_normal())
+    with tf.variable_scope("generator", reuse=tf.AUTO_REUSE):
+        retval = tf.get_variable('learnable_dlatents',
+                              shape=(batch_size, 18, 512),
+                              dtype='float32',
+                              initializer=tf.initializers.random_normal())
+    return retval
 
 
 class Generator:
