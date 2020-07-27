@@ -85,7 +85,7 @@ def main():
             print("Finding latent rep. {0}/{1} for {2}".format(nth_img, len(ref_images), img_name))
             nth_img += 1
             img = PIL.Image.fromarray(img_array, 'RGB')
-            img.save(output_gen_img_filename, 'PNG'))
+            img.save(output_gen_img_filename, 'PNG')
             np.save(output_lr_filename, dlatent)
 
         generator.reset_dlatents()
