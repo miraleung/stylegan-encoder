@@ -54,6 +54,7 @@ def main():
     perceptual_model = PerceptualModel(args.image_size, layer=9, batch_size=args.batch_size)
     perceptual_model.build_perceptual_model(generator.generated_image)
 
+    nth_img = 0
     # Optimize (only) dlatents by minimizing perceptual loss between reference and generated images in feature space
     for images_batch in tqdm(split_to_batches(ref_images, args.batch_size), total=len(ref_images)//args.batch_size):
         names = [os.path.splitext(os.path.basename(x))[0] for x in images_batch]
@@ -69,6 +70,8 @@ def main():
         generated_images = generator.generate_images()
         generated_dlatents = generator.get_dlatents()
         for img_array, dlatent, img_name in zip(generated_images, generated_dlatents, names):
+            print("Finding latent rep. {0}/{1} for {2}".format(nth_img, len(ref_images), img_name))
+            nth_img += 1
             img = PIL.Image.fromarray(img_array, 'RGB')
             img.save(os.path.join(args.generated_images_dir, f'{img_name}.png'), 'PNG')
             np.save(os.path.join(args.dlatent_dir, f'{img_name}.npy'), dlatent)
