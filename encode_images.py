@@ -32,6 +32,9 @@ def main():
     parser.add_argument('--lr', default=1., help='Learning rate for perceptual model', type=float)
     parser.add_argument('--iterations', default=1000, help='Number of optimization steps for each batch', type=int)
 
+    # Caching params.
+    parser.add_argument('--use_cached', default=True, help='Does not overwrite existing latent representations', type=bool)
+
     # Generator params
     parser.add_argument('--randomize_noise', default=False, help='Add noise to dlatents during optimization', type=bool)
     args, other_args = parser.parse_known_args()
@@ -72,11 +75,18 @@ def main():
         generated_images = generator.generate_images()
         generated_dlatents = generator.get_dlatents()
         for img_array, dlatent, img_name in zip(generated_images, generated_dlatents, names):
+            output_gen_img_filename = os.path.join(args.generated_images_dir, f'{img_name}.png')
+            output_lr_filename = os.path.join(args.dlatent_dir, f'{img_name}.npy')
+            if args.use_cached and os.path.exists(output_gen_img_filename) and os.path.exists(output_lr_filename):
+              print("Output files for {0} exist, skipping".format(img_name))
+              nth_img += 1
+              continue
+
             print("Finding latent rep. {0}/{1} for {2}".format(nth_img, len(ref_images), img_name))
             nth_img += 1
             img = PIL.Image.fromarray(img_array, 'RGB')
-            img.save(os.path.join(args.generated_images_dir, f'{img_name}.png'), 'PNG')
-            np.save(os.path.join(args.dlatent_dir, f'{img_name}.npy'), dlatent)
+            img.save(output_gen_img_filename, 'PNG'))
+            np.save(output_lr_filename, dlatent)
 
         generator.reset_dlatents()
 
