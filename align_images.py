@@ -26,7 +26,7 @@ if __name__ == "__main__":
                                                LANDMARKS_MODEL_URL, cache_subdir='temp'))
     RAW_IMAGES_DIR = sys.argv[1]
     ALIGNED_IMAGES_DIR = sys.argv[2]
-    #NUM_FACES = 1 if len(sys.argv) < 4 else sys.argv[3]
+    NUM_FACES = 1 if len(sys.argv) < 4 else sys.argv[3]
 
     landmarks_detector = LandmarksDetector(landmarks_model_path)
     image_names = os.listdir(RAW_IMAGES_DIR)
